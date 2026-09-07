@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: talenthub-postgres
+    environment:
+      POSTGRES_DB: talenthub
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - talenthub-postgres-data:/var/lib/postgresql
+
+volumes:
+  talenthub-postgres-data:
