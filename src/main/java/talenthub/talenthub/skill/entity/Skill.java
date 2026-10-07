@@ -1,4 +1,4 @@
-package talenthub.talenthub.user.entity;
+package talenthub.talenthub.skill.entity;
 
 import jakarta.persistence.*;
 

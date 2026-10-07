@@ -1,6 +1,7 @@
 package talenthub.talenthub.user.entity;
 
 import jakarta.persistence.*;
+import talenthub.talenthub.skill.entity.Skill;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
