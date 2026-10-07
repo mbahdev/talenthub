@@ -38,28 +38,6 @@ public class MissionService {
                 .toList() ;
     }
 
-
-    private MissionResponseDto toResponseDto(Mission mission) {
-        MissionResponseDto dto = new MissionResponseDto();
-
-        dto.setId(mission.getId());
-        dto.setTitle(mission.getTitle());
-        dto.setDescription(mission.getDescription());
-        dto.setBudget(mission.getBudget());
-        dto.setLocation(mission.getLocation());
-        dto.setRemote(mission.isRemote());
-        dto.setStatus(mission.getStatus());
-
-        dto.setClientId(mission.getClient().getId());
-        dto.setSkillIds(
-                mission.getRequiredSkills()
-                        .stream()
-                        .map(Skill::getId)
-                        .collect(Collectors.toSet())
-        );
-        return dto;
-    }
-
     public MissionResponseDto findById(Long id) {
         Mission mission = missionRepository.findById(id).orElseThrow(() -> new MissionNotFoundException(id));
         return toResponseDto(mission);
@@ -96,6 +74,27 @@ public class MissionService {
             throw new MissionNotFoundException(id);
         }
         missionRepository.deleteById(id);
+    }
+
+    private MissionResponseDto toResponseDto(Mission mission) {
+        MissionResponseDto dto = new MissionResponseDto();
+
+        dto.setId(mission.getId());
+        dto.setTitle(mission.getTitle());
+        dto.setDescription(mission.getDescription());
+        dto.setBudget(mission.getBudget());
+        dto.setLocation(mission.getLocation());
+        dto.setRemote(mission.isRemote());
+        dto.setStatus(mission.getStatus());
+
+        dto.setClientId(mission.getClient().getId());
+        dto.setSkillIds(
+                mission.getRequiredSkills()
+                        .stream()
+                        .map(Skill::getId)
+                        .collect(Collectors.toSet())
+        );
+        return dto;
     }
 
     private void toUpdateMissionData(MissionRequestDto missionRequestDto,
