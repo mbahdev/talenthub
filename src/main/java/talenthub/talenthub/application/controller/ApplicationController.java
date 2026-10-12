@@ -44,5 +44,24 @@ public class ApplicationController {
         return applicationService.accept(id) ;
     }
 
+    @PatchMapping("/{id}/reject")
+    public ApplicationResponseDto reject(@PathVariable Long id) {
+        return applicationService.reject(id) ;
+    }
+
+    @GetMapping("/freelance/{freelanceId}")
+    public List<ApplicationResponseDto> findByFreelanceId(
+            @PathVariable Long freelanceId) {
+
+        return applicationService.findByFreelanceId(freelanceId);
+    }
+
+    @GetMapping("/mission/{missionId}")
+    public List<ApplicationResponseDto> findByMissionId(
+            @PathVariable Long missionId) {
+
+        return applicationService.findByMissionId(missionId);
+    }
+
 
 }

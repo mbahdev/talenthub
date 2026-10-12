@@ -10,4 +10,9 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     boolean existsByFreelanceIdAndMissionId(Long freelanceId, Long missionId);
     List<Application> findByMissionIdAndStatus(Long missionId, ApplicationStatus status);
 
+    List<Application> findByFreelanceId(Long freelanceId);
+    List<Application> findByMissionId(Long missionId);
+
+    List<Application> findByMissionIdAndStatusAndIdNot(Long missionId, ApplicationStatus status, Long applicationId);
+
 }

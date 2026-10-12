@@ -1,7 +1,9 @@
 package talenthub.talenthub.skill.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "skills")
 public class Skill {
@@ -16,23 +18,4 @@ public class Skill {
     @Column(nullable = false)
     private boolean active = true;
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
 }

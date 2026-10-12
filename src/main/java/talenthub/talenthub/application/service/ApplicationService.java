@@ -1,6 +1,8 @@
 package talenthub.talenthub.application.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+
 import talenthub.talenthub.application.dto.ApplicationRequestDto;
 import talenthub.talenthub.application.dto.ApplicationResponseDto;
 import talenthub.talenthub.application.entity.Application;
@@ -94,9 +96,10 @@ public class ApplicationService {
     }
 
     /**
-     * Rule : the client of a given mission is the only one that can accept an application "PENDING" for that mission
+     * Rule : the client of a given mission is the only one who can accept an application "PENDING" for that mission
      * Once it's accepted, its status changes into "CLOSED", all the other applications are "REJECTED"
      */
+    @Transactional
     public ApplicationResponseDto accept(Long id) {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new ApplicationNotFoundException(id));
@@ -120,6 +123,40 @@ public class ApplicationService {
         missionRepository.save(mission);
 
         return toResponseDto(application);
+    }
+
+    public ApplicationResponseDto reject(Long id ){
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new ApplicationNotFoundException(id));
+        if (application.getStatus() != PENDING) {
+            throw new ApplicationNotPendingException(id);
+        }
+        application.setStatus(REJECTED);
+        return toResponseDto(applicationRepository.save(application));
+    }
+
+
+    //récupérer les candidatures par mission ou par freelance
+    //- le freelance consulte ses propres candidatures ;
+    //- le client consulte les candidatures reçues pour ses missions.
+    public List<ApplicationResponseDto> findByFreelanceId(
+            Long freelanceId) {
+        freelanceRepository.findById(freelanceId)
+                .orElseThrow(() -> new FreelanceNotFoundException(freelanceId));
+        return applicationRepository.findByFreelanceId(freelanceId)
+                .stream()
+                .map(this::toResponseDto)
+                .toList();
+    }
+
+    public List<ApplicationResponseDto> findByMissionId(
+            Long missionId) {
+        missionRepository.findById(missionId)
+                .orElseThrow(() -> new MissionNotFoundException(missionId));
+        return applicationRepository.findByMissionId(missionId)
+                .stream()
+                .map(this::toResponseDto)
+                .toList();
     }
 
     private ApplicationResponseDto toResponseDto(Application application) {
