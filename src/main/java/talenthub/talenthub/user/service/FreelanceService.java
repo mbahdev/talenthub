@@ -2,16 +2,21 @@
 package talenthub.talenthub.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import talenthub.talenthub.skill.entity.Skill;
 import talenthub.talenthub.skill.repository.SkillRepository;
+import talenthub.talenthub.user.dto.FreelanceRegistrationRequestDto;
 import talenthub.talenthub.user.dto.FreelanceRequestDto;
 import talenthub.talenthub.user.dto.FreelanceResponseDto;
 import talenthub.talenthub.user.entity.Freelance;
+import talenthub.talenthub.user.exception.EmailAlreadyExistsException;
 import talenthub.talenthub.user.exception.FreelanceNotFoundException;
 import talenthub.talenthub.user.repository.FreelanceRepository;
+import talenthub.talenthub.user.repository.UserRepository;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,6 +27,9 @@ public class FreelanceService {
 
     private final FreelanceRepository freelanceRepository;
     private final SkillRepository skillRepository;
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public FreelanceResponseDto findById(Long id) {
@@ -83,6 +91,54 @@ public class FreelanceService {
         response.setDailyRate(freelance.getDailyRate());
         response.setLocation(freelance.getLocation());
 
+        response.setSkillIds(
+                freelance.getSkills()
+                        .stream()
+                        .map(Skill::getId)
+                        .collect(Collectors.toSet())
+        );
+
         return response;
     }
+
+
+    @Transactional
+    public FreelanceResponseDto register(
+            FreelanceRegistrationRequestDto request) {
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new EmailAlreadyExistsException(request.getEmail());
+        }
+
+        Freelance freelance = new Freelance();
+
+        freelance.setEmail(request.getEmail());
+        freelance.setPassword(passwordEncoder.encode(request.getPassword()));
+        freelance.setFirstName(request.getFirstName());
+        freelance.setLastName(request.getLastName());
+        freelance.setPhone(request.getPhone());
+        freelance.setBio(request.getBio());
+        freelance.setDailyRate(request.getDailyRate());
+        freelance.setLocation(request.getLocation());
+
+        Set<Skill> skills = new HashSet<>();
+
+        if (request.getSkillIds() != null) {
+            for (Long skillId : request.getSkillIds()) {
+                Skill skill = skillRepository.findById(skillId)
+                        .orElseThrow(() ->
+                                new IllegalArgumentException(
+                                        "Skill not found with id: " + skillId));
+
+                skills.add(skill);
+            }
+        }
+
+        freelance.setSkills(skills);
+
+        Freelance savedFreelance = freelanceRepository.save(freelance);
+
+        return toResponseDto(savedFreelance);
+    }
+
 }

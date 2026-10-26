@@ -2,7 +2,9 @@
 package talenthub.talenthub.user.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import talenthub.talenthub.user.dto.FreelanceRegistrationRequestDto;
 import talenthub.talenthub.user.dto.FreelanceRequestDto;
 import talenthub.talenthub.user.dto.FreelanceResponseDto;
 import talenthub.talenthub.user.service.FreelanceService;
@@ -35,5 +37,12 @@ public class FreelanceController {
     @GetMapping
     public List<FreelanceResponseDto> findAll() {
         return freelanceService.findAll();
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public FreelanceResponseDto register(
+            @RequestBody FreelanceRegistrationRequestDto request) {
+        return freelanceService.register(request);
     }
 }

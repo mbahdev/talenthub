@@ -18,4 +18,10 @@ public class SkillService {
     public List<Skill> findActiveSkills() {
         return skillRepository.findByActiveTrue();
     }
+
+    public Skill create(Skill skill) {
+        skill.setId(null);
+        skill.setActive(true);
+        return skillRepository.save(skill);
+    }
 }

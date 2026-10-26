@@ -1,8 +1,7 @@
 package talenthub.talenthub.skill.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import talenthub.talenthub.skill.entity.Skill;
 import talenthub.talenthub.skill.service.SkillService;
 
@@ -21,5 +20,11 @@ public class SkillController {
     @GetMapping
     public List<Skill> findActiveSkills() {
         return skillService.findActiveSkills();
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Skill create(@RequestBody Skill skill) {
+        return skillService.create(skill);
     }
 }

@@ -43,17 +43,29 @@ public class MissionService {
         return toResponseDto(mission);
     }
 
-    public MissionResponseDto create(MissionRequestDto missionRequestDto) {
-        Client client = clientRepository.findById(missionRequestDto.getClientId())
+
+    public MissionResponseDto create(MissionRequestDto request) {
+        Client client = clientRepository.findById(request.getClientId())
                 .orElseThrow(() -> new RuntimeException("Client not found"));
-        Set<Skill> skills = new HashSet<>(skillRepository.findAllById(missionRequestDto.getSkillIds()));
+
+        Set<Skill> skills = new HashSet<>(
+                skillRepository.findAllById(request.getSkillIds())
+        );
 
         Mission mission = new Mission();
 
-        toUpdateMissionData(missionRequestDto, client, skills, mission);
+        toUpdateMissionData(request, client, skills, mission);
+
+        // Une nouvelle mission publiée est ouverte par défaut.
+        mission.setStatus(
+                request.getStatus() != null
+                        ? request.getStatus()
+                        : MissionStatus.OPEN
+        );
 
         return toResponseDto(missionRepository.save(mission));
     }
+
 
     public MissionResponseDto update(Long id, MissionRequestDto missionRequestDto) {
 
@@ -104,11 +116,10 @@ public class MissionService {
         mission.setBudget(missionRequestDto.getBudget());
         mission.setLocation(missionRequestDto.getLocation());
         mission.setRemote(missionRequestDto.isRemote());
-        mission.setStatus(missionRequestDto.getStatus());
-
+        if (missionRequestDto.getStatus() != null) {
+            mission.setStatus(missionRequestDto.getStatus());
+        }
         mission.setClient(client);
         mission.setRequiredSkills(skills);
     }
-
-
 }
