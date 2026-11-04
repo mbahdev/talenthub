@@ -1,13 +1,22 @@
+
 package talenthub.talenthub.mission.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import talenthub.talenthub.application.entity.Application;
+import talenthub.talenthub.favorite.entity.Favorite;
 import talenthub.talenthub.user.entity.Client;
 import talenthub.talenthub.skill.entity.Skill;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+@Data
 @Entity
 @Table(name = "missions")
 public class Mission {
@@ -36,6 +45,8 @@ public class Mission {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "client_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Client client;
 
     @ManyToMany
@@ -44,74 +55,25 @@ public class Mission {
             joinColumns = @JoinColumn(name = "mission_id"),
             inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<Skill> requiredSkills = new HashSet<>();
 
-    public Long getId() {
-        return id;
-    }
+    @OneToMany(
+            mappedBy = "mission",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Application> applications = new ArrayList<>();
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public BigDecimal getBudget() {
-        return budget;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public boolean isRemote() {
-        return remote;
-    }
-
-    public MissionStatus getStatus() {
-        return status;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public Set<Skill> getRequiredSkills() {
-        return requiredSkills;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setBudget(BigDecimal budget) {
-        this.budget = budget;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public void setRemote(boolean remote) {
-        this.remote = remote;
-    }
-
-    public void setStatus(MissionStatus status) {
-        this.status = status;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
-    public void setRequiredSkills(Set<Skill> requiredSkills) {
-        this.requiredSkills = requiredSkills;
-    }
-
+    @OneToMany(
+            mappedBy = "mission",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Favorite> favorites = new ArrayList<>();
 }

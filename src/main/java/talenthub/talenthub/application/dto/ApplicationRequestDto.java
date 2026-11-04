@@ -9,5 +9,5 @@ public class ApplicationRequestDto {
 
     private String coverLetter;
     private BigDecimal proposedPrice;
-    private Long freelanceId, missionId;
+    private Long missionId;
 }

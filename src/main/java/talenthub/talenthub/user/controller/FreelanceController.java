@@ -3,7 +3,10 @@ package talenthub.talenthub.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.AccessDeniedException;
+import talenthub.talenthub.security.UserPrincipal;
 import talenthub.talenthub.user.dto.FreelanceRegistrationRequestDto;
 import talenthub.talenthub.user.dto.FreelanceRequestDto;
 import talenthub.talenthub.user.dto.FreelanceResponseDto;
@@ -19,18 +22,27 @@ public class FreelanceController {
     private final FreelanceService freelanceService;
 
     @GetMapping("/{id}")
-    public FreelanceResponseDto findById(@PathVariable Long id) {
+    public FreelanceResponseDto findById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserPrincipal principal) {
+
+        if (!principal.getUser().getId().equals(id)) {
+            throw new AccessDeniedException("You cannot access another freelance profile.");
+        }
+
         return freelanceService.findById(id);
     }
 
-    /*
-        @RequestBody convert the given JSON into FreelanceRequestDto.
-        Service apply the update and send back a FreelanceResponseDto.
-     */
     @PutMapping("/{id}")
     public FreelanceResponseDto update(
             @PathVariable Long id,
-            @RequestBody FreelanceRequestDto request) {
+            @RequestBody FreelanceRequestDto request,
+            @AuthenticationPrincipal UserPrincipal principal) {
+
+        if (!principal.getUser().getId().equals(id)) {
+            throw new AccessDeniedException("You cannot update another freelance profile.");
+        }
+
         return freelanceService.update(id, request);
     }
 

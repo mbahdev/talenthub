@@ -1,5 +1,6 @@
 package talenthub.talenthub.mission.service;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import talenthub.talenthub.mission.dto.MissionRequestDto;
 import talenthub.talenthub.mission.dto.MissionResponseDto;
@@ -9,6 +10,7 @@ import talenthub.talenthub.mission.exception.MissionNotFoundException;
 import talenthub.talenthub.mission.repository.MissionRepository;
 import talenthub.talenthub.user.entity.Client;
 import talenthub.talenthub.skill.entity.Skill;
+import talenthub.talenthub.user.exception.ClientNotFoundException;
 import talenthub.talenthub.user.repository.ClientRepository;
 import talenthub.talenthub.skill.repository.SkillRepository;
 
@@ -67,25 +69,44 @@ public class MissionService {
     }
 
 
-    public MissionResponseDto update(Long id, MissionRequestDto missionRequestDto) {
+    public MissionResponseDto update(
+            Long id,
+            MissionRequestDto missionRequestDto,
+            Long clientId) {
 
-        Client client = clientRepository.findById(missionRequestDto.getClientId())
-                .orElseThrow(() -> new RuntimeException("Client not found"));
+        Mission mission = missionRepository.findById(id)
+                .orElseThrow(() -> new MissionNotFoundException(id));
 
-        Set<Skill> skills = new HashSet<>(skillRepository.findAllById(missionRequestDto.getSkillIds()));
+        if (!mission.getClient().getId().equals(clientId)) {
+            throw new AccessDeniedException(
+                    "You cannot modify another client's mission."
+            );
+        }
 
-        Mission  mission = missionRepository.findById(id).orElseThrow(() -> new MissionNotFoundException(id));
+        Client client = clientRepository.findById(clientId)
+                .orElseThrow(() -> new ClientNotFoundException(clientId));
+
+        Set<Skill> skills = new HashSet<>(
+                skillRepository.findAllById(missionRequestDto.getSkillIds())
+        );
 
         toUpdateMissionData(missionRequestDto, client, skills, mission);
 
         return toResponseDto(missionRepository.save(mission));
     }
 
-    public void delete(Long id) {
-        if (!missionRepository.existsById(id)) {
-            throw new MissionNotFoundException(id);
+    public void delete(Long id, Long clientId) {
+
+        Mission mission = missionRepository.findById(id)
+                .orElseThrow(() -> new MissionNotFoundException(id));
+
+        if (!mission.getClient().getId().equals(clientId)) {
+            throw new AccessDeniedException(
+                    "You cannot delete another client's mission."
+            );
         }
-        missionRepository.deleteById(id);
+
+        missionRepository.delete(mission);
     }
 
     private MissionResponseDto toResponseDto(Mission mission) {

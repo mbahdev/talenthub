@@ -1,10 +1,12 @@
 package talenthub.talenthub.mission.controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import talenthub.talenthub.mission.dto.MissionRequestDto;
 import talenthub.talenthub.mission.dto.MissionResponseDto;
 import talenthub.talenthub.mission.entity.MissionStatus;
 import talenthub.talenthub.mission.service.MissionService;
+import talenthub.talenthub.security.UserPrincipal;
 
 import java.util.List;
 
@@ -25,25 +27,30 @@ public class MissionController {
         return missionService.findByStatus(status);
     }
 
+    @PostMapping
+    public MissionResponseDto create(@RequestBody MissionRequestDto request) {
+        return  missionService.create(request);
+    }
+
     @GetMapping("/{id}")
     public MissionResponseDto findById(@PathVariable Long id) {
         return missionService.findById(id);
     }
 
-    @PostMapping
-    public MissionResponseDto create(@RequestBody MissionRequestDto request) {
-        return  missionService.create(request);
-    }
-    
     @PutMapping("/{id}")
     public MissionResponseDto update(
-            @PathVariable Long id, 
-            @RequestBody MissionRequestDto request) {
-        return missionService.update(id, request);
+            @PathVariable Long id,
+            @RequestBody MissionRequestDto request,
+            @AuthenticationPrincipal UserPrincipal principal) {
+
+        return missionService.update(id, request, principal.getUser().getId());
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        missionService.delete(id);
+    public void delete(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserPrincipal principal) {
+
+        missionService.delete(id, principal.getUser().getId());
     }
 }

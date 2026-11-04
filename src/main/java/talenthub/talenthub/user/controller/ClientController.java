@@ -3,7 +3,10 @@ package talenthub.talenthub.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import talenthub.talenthub.security.UserPrincipal;
 import talenthub.talenthub.user.dto.ClientRegistrationRequestDto;
 import talenthub.talenthub.user.dto.ClientRequestDto;
 import talenthub.talenthub.user.dto.ClientResponseDto;
@@ -19,14 +22,21 @@ public class ClientController {
     private final ClientService clientService;
 
     @GetMapping("/{id}")
-    public ClientResponseDto findById(@PathVariable Long id) {
+    public ClientResponseDto findById(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal principal) {
+        if (!principal.getUser().getId().equals(id)) {
+            throw new AccessDeniedException("You cannot access another client profile.");
+        }
         return clientService.findById(id);
     }
 
     @PutMapping("/{id}")
     public ClientResponseDto update(
             @PathVariable Long id,
-            @RequestBody ClientRequestDto request) {
+            @RequestBody ClientRequestDto request,
+            @AuthenticationPrincipal UserPrincipal principal) {
+        if (!principal.getUser().getId().equals(id)) {
+            throw new AccessDeniedException("You cannot modify another client profile.");
+        }
         return clientService.update(id, request);
     }
 
