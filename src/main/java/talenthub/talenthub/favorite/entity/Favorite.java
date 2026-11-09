@@ -1,6 +1,7 @@
 package talenthub.talenthub.favorite.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import talenthub.talenthub.mission.entity.Mission;
 import talenthub.talenthub.user.entity.Freelance;
 
@@ -14,6 +15,7 @@ import talenthub.talenthub.user.entity.Freelance;
                 )
         }
 )
+@Data
 public class Favorite {
 
     @Id
@@ -27,24 +29,4 @@ public class Favorite {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "mission_id", nullable = false)
     private Mission mission;
-
-    public Long getId() {
-        return id;
-    }
-
-    public Freelance getFreelance() {
-        return freelance;
-    }
-
-    public Mission getMission() {
-        return mission;
-    }
-
-    public void setFreelance(Freelance freelance) {
-        this.freelance = freelance;
-    }
-
-    public void setMission(Mission mission) {
-        this.mission = mission;
-    }
 }

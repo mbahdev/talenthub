@@ -1,5 +1,6 @@
 package talenthub.talenthub.application.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +40,7 @@ public class ApplicationController {
 
     @PostMapping
     public ApplicationResponseDto create(
-            @RequestBody ApplicationRequestDto request,
+            @Valid @RequestBody ApplicationRequestDto request,
             @AuthenticationPrincipal UserPrincipal principal) {
 
         return applicationService.create(

@@ -1,6 +1,7 @@
 
 package talenthub.talenthub.user.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -32,7 +33,7 @@ public class ClientController {
     @PutMapping("/{id}")
     public ClientResponseDto update(
             @PathVariable Long id,
-            @RequestBody ClientRequestDto request,
+            @Valid @RequestBody ClientRequestDto request,
             @AuthenticationPrincipal UserPrincipal principal) {
         if (!principal.getUser().getId().equals(id)) {
             throw new AccessDeniedException("You cannot modify another client profile.");
@@ -49,7 +50,7 @@ public class ClientController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ClientResponseDto register(
-            @RequestBody ClientRegistrationRequestDto request) {
+            @Valid @RequestBody ClientRegistrationRequestDto request) {
         return clientService.register(request);
     }
 

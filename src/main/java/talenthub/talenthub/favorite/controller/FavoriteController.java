@@ -1,6 +1,7 @@
 
 package talenthub.talenthub.favorite.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import talenthub.talenthub.favorite.dto.FavoriteRequestDto;
@@ -21,7 +22,7 @@ public class FavoriteController {
 
     @PostMapping
     public FavoriteResponseDto create(
-            @RequestBody FavoriteRequestDto request) {
+            @Valid @RequestBody FavoriteRequestDto request) {
 
         return favoriteService.create(request);
     }

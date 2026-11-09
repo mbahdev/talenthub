@@ -143,7 +143,9 @@ public class ApplicationService {
         List<Application> otherApplications =
                 applicationRepository.findByMissionIdAndStatus(mission.getId(), PENDING);
 
-        otherApplications.forEach(app -> app.setStatus(REJECTED));
+        otherApplications.stream()
+        .filter(app -> !app.getId().equals(application.getId()))
+        .forEach(app -> app.setStatus(REJECTED));
 
         applicationRepository.saveAll(otherApplications);
         applicationRepository.save(application);

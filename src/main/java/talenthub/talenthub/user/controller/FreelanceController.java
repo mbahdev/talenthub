@@ -1,6 +1,7 @@
 
 package talenthub.talenthub.user.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,7 +37,7 @@ public class FreelanceController {
     @PutMapping("/{id}")
     public FreelanceResponseDto update(
             @PathVariable Long id,
-            @RequestBody FreelanceRequestDto request,
+            @Valid @RequestBody FreelanceRequestDto request,
             @AuthenticationPrincipal UserPrincipal principal) {
 
         if (!principal.getUser().getId().equals(id)) {
@@ -54,7 +55,7 @@ public class FreelanceController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public FreelanceResponseDto register(
-            @RequestBody FreelanceRegistrationRequestDto request) {
+            @Valid @RequestBody FreelanceRegistrationRequestDto request) {
         return freelanceService.register(request);
     }
 }
