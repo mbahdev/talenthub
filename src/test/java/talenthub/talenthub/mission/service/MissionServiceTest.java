@@ -148,7 +148,7 @@ class MissionServiceTest {
                     return mission;
                 });
 
-        MissionResponseDto result = missionService.create(request);
+        MissionResponseDto result = missionService.create(request, clientId);
 
         assertThat(result.getId()).isEqualTo(10L);
         assertThat(result.getTitle()).isEqualTo(request.getTitle());
@@ -180,7 +180,7 @@ class MissionServiceTest {
                     return mission;
                 });
 
-        MissionResponseDto result = missionService.create(request);
+        MissionResponseDto result = missionService.create(request, clientId);
 
         assertThat(result.getStatus()).isEqualTo(MissionStatus.CLOSED);
     }
@@ -190,13 +190,13 @@ class MissionServiceTest {
         Long clientId = 1L;
 
         MissionRequestDto request = createMissionRequest(clientId);
+        request.setSkillIds(Set.of());
 
         when(clientRepository.findById(clientId))
                 .thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> missionService.create(request))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Client not found");
+        assertThatThrownBy(() -> missionService.create(request, clientId))
+                .isInstanceOf(ClientNotFoundException.class);
 
         verify(missionRepository, never()).save(any());
         verify(skillRepository, never()).findAllById(any());

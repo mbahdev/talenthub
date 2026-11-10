@@ -1,6 +1,7 @@
     package talenthub.talenthub.mission.controller;
 
     import jakarta.validation.Valid;
+    import org.springframework.http.HttpStatus;
     import org.springframework.security.core.annotation.AuthenticationPrincipal;
     import org.springframework.web.bind.annotation.*;
     import talenthub.talenthub.mission.dto.MissionRequestDto;
@@ -29,8 +30,12 @@
         }
 
         @PostMapping
-        public MissionResponseDto create(@Valid @RequestBody MissionRequestDto request) {
-            return  missionService.create(request);
+        @ResponseStatus(HttpStatus.CREATED)
+        public MissionResponseDto create(
+                @Valid @RequestBody MissionRequestDto request,
+                @AuthenticationPrincipal UserPrincipal principal) {
+
+            return missionService.create(request, principal.getUser().getId());
         }
 
         @GetMapping("/{id}")

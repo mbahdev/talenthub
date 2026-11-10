@@ -14,7 +14,6 @@ import talenthub.talenthub.application.entity.Application;
 import talenthub.talenthub.application.entity.ApplicationStatus;
 import talenthub.talenthub.application.exception.ApplicationAlreadyExistsException;
 import talenthub.talenthub.application.exception.ApplicationNotPendingException;
-import talenthub.talenthub.application.exception.FreelanceNotFoundException;
 import talenthub.talenthub.application.exception.MissionNotOpenException;
 import talenthub.talenthub.application.repository.ApplicationRepository;
 import talenthub.talenthub.mission.entity.Mission;
@@ -23,6 +22,7 @@ import talenthub.talenthub.mission.exception.MissionNotFoundException;
 import talenthub.talenthub.mission.repository.MissionRepository;
 import talenthub.talenthub.user.entity.Client;
 import talenthub.talenthub.user.entity.Freelance;
+import talenthub.talenthub.user.exception.FreelanceNotFoundException;
 import talenthub.talenthub.user.repository.FreelanceRepository;
 
 import java.util.List;

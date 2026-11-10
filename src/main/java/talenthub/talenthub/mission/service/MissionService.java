@@ -46,9 +46,18 @@ public class MissionService {
     }
 
 
-    public MissionResponseDto create(MissionRequestDto request) {
-        Client client = clientRepository.findById(request.getClientId())
-                .orElseThrow(() -> new RuntimeException("Client not found"));
+    public MissionResponseDto create(
+            MissionRequestDto request,
+            Long authenticatedClientId) {
+
+        if (!request.getClientId().equals(authenticatedClientId)) {
+            throw new AccessDeniedException(
+                    "You cannot create a mission for another client."
+            );
+        }
+
+        Client client = clientRepository.findById(authenticatedClientId)
+                .orElseThrow(() -> new ClientNotFoundException(authenticatedClientId));
 
         Set<Skill> skills = new HashSet<>(
                 skillRepository.findAllById(request.getSkillIds())
@@ -58,7 +67,6 @@ public class MissionService {
 
         toUpdateMissionData(request, client, skills, mission);
 
-        // Une nouvelle mission publiée est ouverte par défaut.
         mission.setStatus(
                 request.getStatus() != null
                         ? request.getStatus()
@@ -72,19 +80,19 @@ public class MissionService {
     public MissionResponseDto update(
             Long id,
             MissionRequestDto missionRequestDto,
-            Long clientId) {
+            Long authenticatedClientId) {
 
         Mission mission = missionRepository.findById(id)
                 .orElseThrow(() -> new MissionNotFoundException(id));
 
-        if (!mission.getClient().getId().equals(clientId)) {
+        if (!mission.getClient().getId().equals(authenticatedClientId)) {
             throw new AccessDeniedException(
                     "You cannot modify another client's mission."
             );
         }
 
-        Client client = clientRepository.findById(clientId)
-                .orElseThrow(() -> new ClientNotFoundException(clientId));
+        Client client = clientRepository.findById(authenticatedClientId)
+                .orElseThrow(() -> new ClientNotFoundException(authenticatedClientId));
 
         Set<Skill> skills = new HashSet<>(
                 skillRepository.findAllById(missionRequestDto.getSkillIds())
@@ -95,12 +103,12 @@ public class MissionService {
         return toResponseDto(missionRepository.save(mission));
     }
 
-    public void delete(Long id, Long clientId) {
+    public void delete(Long id, Long authenticatedClientId) {
 
         Mission mission = missionRepository.findById(id)
                 .orElseThrow(() -> new MissionNotFoundException(id));
 
-        if (!mission.getClient().getId().equals(clientId)) {
+        if (!mission.getClient().getId().equals(authenticatedClientId)) {
             throw new AccessDeniedException(
                     "You cannot delete another client's mission."
             );

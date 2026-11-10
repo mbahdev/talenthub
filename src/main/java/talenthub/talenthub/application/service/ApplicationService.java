@@ -16,6 +16,7 @@ import talenthub.talenthub.mission.exception.MissionNotFoundException;
 import talenthub.talenthub.mission.repository.MissionRepository;
 import talenthub.talenthub.user.entity.Client;
 import talenthub.talenthub.user.entity.Freelance;
+import talenthub.talenthub.user.exception.FreelanceNotFoundException;
 import talenthub.talenthub.user.entity.User;
 import talenthub.talenthub.user.repository.FreelanceRepository;
 

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.access.AccessDeniedException;
 
 import talenthub.talenthub.favorite.dto.FavoriteRequestDto;
 import talenthub.talenthub.favorite.dto.FavoriteResponseDto;
@@ -52,19 +53,14 @@ class FavoriteServiceTest {
 
         Freelance freelance = createFreelance(freelanceId);
         Mission mission = createMission(missionId);
-
-        FavoriteRequestDto request = createFavoriteRequest(
-                freelanceId, missionId
-        );
+        FavoriteRequestDto request = createFavoriteRequest(freelanceId, missionId);
 
         when(freelanceRepository.findById(freelanceId))
                 .thenReturn(Optional.of(freelance));
         when(missionRepository.findById(missionId))
                 .thenReturn(Optional.of(mission));
-        when(favoriteRepository.existsByFreelanceIdAndMissionId(
-                freelanceId, missionId))
+        when(favoriteRepository.existsByFreelanceIdAndMissionId(freelanceId, missionId))
                 .thenReturn(false);
-
         when(favoriteRepository.save(any(Favorite.class)))
                 .thenAnswer(invocation -> {
                     Favorite favorite = invocation.getArgument(0);
@@ -72,7 +68,7 @@ class FavoriteServiceTest {
                     return favorite;
                 });
 
-        FavoriteResponseDto result = favoriteService.create(request);
+        FavoriteResponseDto result = favoriteService.create(request, freelanceId);
 
         assertThat(result.getId()).isEqualTo(100L);
         assertThat(result.getFreelanceId()).isEqualTo(freelanceId);
@@ -86,14 +82,12 @@ class FavoriteServiceTest {
         Long freelanceId = 1L;
         Long missionId = 10L;
 
-        FavoriteRequestDto request = createFavoriteRequest(
-                freelanceId, missionId
-        );
+        FavoriteRequestDto request = createFavoriteRequest(freelanceId, missionId);
 
         when(freelanceRepository.findById(freelanceId))
                 .thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> favoriteService.create(request))
+        assertThatThrownBy(() -> favoriteService.create(request, freelanceId))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Freelance not found with id: " + freelanceId);
 
@@ -107,17 +101,14 @@ class FavoriteServiceTest {
         Long missionId = 10L;
 
         Freelance freelance = createFreelance(freelanceId);
-
-        FavoriteRequestDto request = createFavoriteRequest(
-                freelanceId, missionId
-        );
+        FavoriteRequestDto request = createFavoriteRequest(freelanceId, missionId);
 
         when(freelanceRepository.findById(freelanceId))
                 .thenReturn(Optional.of(freelance));
         when(missionRepository.findById(missionId))
                 .thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> favoriteService.create(request))
+        assertThatThrownBy(() -> favoriteService.create(request, freelanceId))
                 .isInstanceOf(MissionNotFoundException.class);
 
         verify(favoriteRepository, never()).save(any());
@@ -130,24 +121,39 @@ class FavoriteServiceTest {
 
         Freelance freelance = createFreelance(freelanceId);
         Mission mission = createMission(missionId);
-
-        FavoriteRequestDto request = createFavoriteRequest(
-                freelanceId, missionId
-        );
+        FavoriteRequestDto request = createFavoriteRequest(freelanceId, missionId);
 
         when(freelanceRepository.findById(freelanceId))
                 .thenReturn(Optional.of(freelance));
         when(missionRepository.findById(missionId))
                 .thenReturn(Optional.of(mission));
-        when(favoriteRepository.existsByFreelanceIdAndMissionId(
-                freelanceId, missionId))
+        when(favoriteRepository.existsByFreelanceIdAndMissionId(freelanceId, missionId))
                 .thenReturn(true);
 
-        assertThatThrownBy(() -> favoriteService.create(request))
+        assertThatThrownBy(() -> favoriteService.create(request, freelanceId))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("This mission is already in favorites");
 
         verify(favoriteRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenCreatingFavoriteForAnotherFreelance() {
+        Long freelanceId = 1L;
+        Long authenticatedFreelanceId = 2L;
+
+        FavoriteRequestDto request = createFavoriteRequest(freelanceId, 10L);
+
+        assertThatThrownBy(() ->
+                favoriteService.create(request, authenticatedFreelanceId))
+                .isInstanceOf(AccessDeniedException.class)
+                .hasMessage("You cannot create a favorite for another freelance.");
+
+        verifyNoInteractions(
+                freelanceRepository,
+                missionRepository,
+                favoriteRepository
+        );
     }
 
     // --------------------------------------------------
@@ -159,14 +165,8 @@ class FavoriteServiceTest {
         Long freelanceId = 1L;
 
         Freelance freelance = createFreelance(freelanceId);
-
-        Favorite favorite1 = createFavorite(
-                100L, freelance, createMission(10L)
-        );
-
-        Favorite favorite2 = createFavorite(
-                101L, freelance, createMission(20L)
-        );
+        Favorite favorite1 = createFavorite(100L, freelance, createMission(10L));
+        Favorite favorite2 = createFavorite(101L, freelance, createMission(20L));
 
         when(freelanceRepository.findById(freelanceId))
                 .thenReturn(Optional.of(freelance));
@@ -174,13 +174,12 @@ class FavoriteServiceTest {
                 .thenReturn(List.of(favorite1, favorite2));
 
         List<FavoriteResponseDto> result =
-                favoriteService.findByFreelanceId(freelanceId);
+                favoriteService.findByFreelanceId(freelanceId, freelanceId);
 
         assertThat(result).hasSize(2);
         assertThat(result)
                 .extracting(FavoriteResponseDto::getId)
                 .containsExactly(100L, 101L);
-
         assertThat(result)
                 .extracting(FavoriteResponseDto::getMissionId)
                 .containsExactly(10L, 20L);
@@ -200,7 +199,7 @@ class FavoriteServiceTest {
                 .thenReturn(List.of());
 
         List<FavoriteResponseDto> result =
-                favoriteService.findByFreelanceId(freelanceId);
+                favoriteService.findByFreelanceId(freelanceId, freelanceId);
 
         assertThat(result).isEmpty();
     }
@@ -213,11 +212,24 @@ class FavoriteServiceTest {
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() ->
-                favoriteService.findByFreelanceId(freelanceId))
+                favoriteService.findByFreelanceId(freelanceId, freelanceId))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Freelance not found with id: " + freelanceId);
 
         verify(favoriteRepository, never()).findByFreelanceId(any());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenAccessingAnotherFreelancesFavorites() {
+        Long freelanceId = 1L;
+        Long authenticatedFreelanceId = 2L;
+
+        assertThatThrownBy(() ->
+                favoriteService.findByFreelanceId(freelanceId, authenticatedFreelanceId))
+                .isInstanceOf(AccessDeniedException.class)
+                .hasMessage("You cannot access another freelance's favorites.");
+
+        verifyNoInteractions(freelanceRepository, favoriteRepository);
     }
 
     // --------------------------------------------------
@@ -231,16 +243,12 @@ class FavoriteServiceTest {
 
         Freelance freelance = createFreelance(freelanceId);
         Mission mission = createMission(missionId);
+        Favorite favorite = createFavorite(100L, freelance, mission);
 
-        Favorite favorite = createFavorite(
-                100L, freelance, mission
-        );
-
-        when(favoriteRepository.findByFreelanceIdAndMissionId(
-                freelanceId, missionId))
+        when(favoriteRepository.findByFreelanceIdAndMissionId(freelanceId, missionId))
                 .thenReturn(Optional.of(favorite));
 
-        favoriteService.delete(freelanceId, missionId);
+        favoriteService.delete(freelanceId, missionId, freelanceId);
 
         verify(favoriteRepository).delete(favorite);
     }
@@ -250,18 +258,29 @@ class FavoriteServiceTest {
         Long freelanceId = 1L;
         Long missionId = 10L;
 
-        when(favoriteRepository.findByFreelanceIdAndMissionId(
-                freelanceId, missionId))
+        when(favoriteRepository.findByFreelanceIdAndMissionId(freelanceId, missionId))
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() ->
-                favoriteService.delete(freelanceId, missionId))
+                favoriteService.delete(freelanceId, missionId, freelanceId))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(
-                        "Favorite not found for this freelance and mission"
-                );
+                .hasMessage("Favorite not found for this freelance and mission");
 
         verify(favoriteRepository, never()).delete(any());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenDeletingAnotherFreelancesFavorite() {
+        Long freelanceId = 1L;
+        Long missionId = 10L;
+        Long authenticatedFreelanceId = 2L;
+
+        assertThatThrownBy(() ->
+                favoriteService.delete(freelanceId, missionId, authenticatedFreelanceId))
+                .isInstanceOf(AccessDeniedException.class)
+                .hasMessage("You cannot delete another freelance's favorites.");
+
+        verifyNoInteractions(favoriteRepository);
     }
 
     // --------------------------------------------------

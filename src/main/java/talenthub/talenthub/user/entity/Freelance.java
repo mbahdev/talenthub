@@ -1,12 +1,16 @@
 package talenthub.talenthub.user.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import talenthub.talenthub.skill.entity.Skill;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+@Setter
+@Getter
 @Entity
 @DiscriminatorValue("Freelance")
 public class Freelance extends User{
@@ -23,35 +27,4 @@ public class Freelance extends User{
     )
     private Set<Skill> skills = new HashSet<Skill>();
 
-    public String getBio() {
-        return bio;
-    }
-
-    public BigDecimal getDailyRate() {
-        return dailyRate;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public Set<Skill> getSkills() {
-        return skills;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
-
-    public void setDailyRate(BigDecimal dailyRate) {
-        this.dailyRate = dailyRate;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public void setSkills(Set<Skill> skills) {
-        this.skills = skills;
-    }
 }

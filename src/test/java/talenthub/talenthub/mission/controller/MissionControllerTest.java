@@ -55,16 +55,23 @@ class MissionControllerTest {
 
     @Test
     void createShouldReturnCreatedMission() {
+        Long clientId = 1L;
+
         MissionRequestDto request = new MissionRequestDto();
         MissionResponseDto response = new MissionResponseDto();
 
-        when(missionService.create(request)).thenReturn(response);
+        UserPrincipal principal = mock(UserPrincipal.class);
+        User user = mock(User.class);
 
-        MissionResponseDto result = missionController.create(request);
+        when(principal.getUser()).thenReturn(user);
+        when(user.getId()).thenReturn(clientId);
+        when(missionService.create(request, clientId)).thenReturn(response);
+
+        MissionResponseDto result = missionController.create(request, principal);
 
         assertThat(result).isSameAs(response);
 
-        verify(missionService).create(request);
+        verify(missionService).create(request, clientId);
     }
 
     @Test

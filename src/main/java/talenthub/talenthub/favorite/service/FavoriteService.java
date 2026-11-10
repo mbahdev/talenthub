@@ -1,5 +1,7 @@
+
 package talenthub.talenthub.favorite.service;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,21 +35,27 @@ public class FavoriteService {
     }
 
     @Transactional
-    public FavoriteResponseDto create(FavoriteRequestDto request) {
+    public FavoriteResponseDto create(
+            FavoriteRequestDto request,
+            Long authenticatedFreelanceId) {
 
         Long freelanceId = request.getFreelanceId();
         Long missionId = request.getMissionId();
 
-        Freelance freelance = freelanceRepository.findById(freelanceId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Freelance not found with id: " + freelanceId));
+        if (!freelanceId.equals(authenticatedFreelanceId)) {
+            throw new AccessDeniedException(
+                    "You cannot create a favorite for another freelance.");
+        }
+
+        Freelance freelance = freelanceRepository.findById(authenticatedFreelanceId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Freelance not found with id: " + authenticatedFreelanceId));
 
         Mission mission = missionRepository.findById(missionId)
                 .orElseThrow(() -> new MissionNotFoundException(missionId));
 
         if (favoriteRepository.existsByFreelanceIdAndMissionId(
-                freelanceId, missionId)) {
+                authenticatedFreelanceId, missionId)) {
             throw new IllegalStateException(
                     "This mission is already in favorites");
         }
@@ -59,27 +67,40 @@ public class FavoriteService {
         return toResponseDto(favoriteRepository.save(favorite));
     }
 
-    public List<FavoriteResponseDto> findByFreelanceId(Long freelanceId) {
+    public List<FavoriteResponseDto> findByFreelanceId(
+            Long freelanceId,
+            Long authenticatedFreelanceId) {
 
-        freelanceRepository.findById(freelanceId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Freelance not found with id: " + freelanceId));
+        if (!freelanceId.equals(authenticatedFreelanceId)) {
+            throw new AccessDeniedException(
+                    "You cannot access another freelance's favorites.");
+        }
 
-        return favoriteRepository.findByFreelanceId(freelanceId)
+        freelanceRepository.findById(authenticatedFreelanceId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Freelance not found with id: " + authenticatedFreelanceId));
+
+        return favoriteRepository.findByFreelanceId(authenticatedFreelanceId)
                 .stream()
                 .map(this::toResponseDto)
                 .toList();
     }
 
     @Transactional
-    public void delete(Long freelanceId, Long missionId) {
+    public void delete(
+            Long freelanceId,
+            Long missionId,
+            Long authenticatedFreelanceId) {
+
+        if (!freelanceId.equals(authenticatedFreelanceId)) {
+            throw new AccessDeniedException(
+                    "You cannot delete another freelance's favorites.");
+        }
 
         Favorite favorite = favoriteRepository
-                .findByFreelanceIdAndMissionId(freelanceId, missionId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Favorite not found for this freelance and mission"));
+                .findByFreelanceIdAndMissionId(authenticatedFreelanceId, missionId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Favorite not found for this freelance and mission"));
 
         favoriteRepository.delete(favorite);
     }
