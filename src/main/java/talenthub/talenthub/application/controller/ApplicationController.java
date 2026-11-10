@@ -1,5 +1,6 @@
 package talenthub.talenthub.application.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/applications")
+@SecurityRequirement(name = "basicAuth")
 public class ApplicationController {
 
     private final ApplicationService applicationService;

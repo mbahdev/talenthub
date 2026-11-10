@@ -1,6 +1,6 @@
-
 package talenthub.talenthub.user.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,10 @@ public class ClientController {
     private final ClientService clientService;
 
     @GetMapping("/{id}")
-    public ClientResponseDto findById(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal principal) {
+    @SecurityRequirement(name = "basicAuth")
+    public ClientResponseDto findById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserPrincipal principal) {
         if (!principal.getUser().getId().equals(id)) {
             throw new AccessDeniedException("You cannot access another client profile.");
         }
@@ -31,6 +34,7 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
+    @SecurityRequirement(name = "basicAuth")
     public ClientResponseDto update(
             @PathVariable Long id,
             @Valid @RequestBody ClientRequestDto request,
@@ -41,8 +45,8 @@ public class ClientController {
         return clientService.update(id, request);
     }
 
-
     @GetMapping
+    @SecurityRequirement(name = "basicAuth")
     public List<ClientResponseDto> findAll() {
         return clientService.findAll();
     }
@@ -53,5 +57,4 @@ public class ClientController {
             @Valid @RequestBody ClientRegistrationRequestDto request) {
         return clientService.register(request);
     }
-
 }

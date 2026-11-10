@@ -1,5 +1,6 @@
     package talenthub.talenthub.mission.controller;
 
+    import io.swagger.v3.oas.annotations.security.SecurityRequirement;
     import jakarta.validation.Valid;
     import org.springframework.http.HttpStatus;
     import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,6 +15,7 @@
 
     @RestController
     @RequestMapping("/api/missions")
+    @SecurityRequirement(name = "basicAuth")
     public class MissionController {
 
         private final MissionService missionService;

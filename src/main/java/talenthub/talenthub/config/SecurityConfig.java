@@ -46,6 +46,13 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider)
                 .authorizeHttpRequests(auth -> auth
 
+                        // Documentation Swagger
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+
                         // Inscription : accès public
                         .requestMatchers(HttpMethod.POST, "/api/clients", "/api/freelances")
                         .permitAll()

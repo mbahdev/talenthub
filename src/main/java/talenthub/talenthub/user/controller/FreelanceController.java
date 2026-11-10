@@ -1,6 +1,7 @@
 
 package talenthub.talenthub.user.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ public class FreelanceController {
     private final FreelanceService freelanceService;
 
     @GetMapping("/{id}")
+    @SecurityRequirement(name = "basicAuth")
     public FreelanceResponseDto findById(
             @PathVariable Long id,
             @AuthenticationPrincipal UserPrincipal principal) {
@@ -35,6 +37,7 @@ public class FreelanceController {
     }
 
     @PutMapping("/{id}")
+    @SecurityRequirement(name = "basicAuth")
     public FreelanceResponseDto update(
             @PathVariable Long id,
             @Valid @RequestBody FreelanceRequestDto request,
@@ -48,6 +51,7 @@ public class FreelanceController {
     }
 
     @GetMapping
+    @SecurityRequirement(name = "basicAuth")
     public List<FreelanceResponseDto> findAll() {
         return freelanceService.findAll();
     }
