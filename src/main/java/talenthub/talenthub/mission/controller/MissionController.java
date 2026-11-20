@@ -7,6 +7,7 @@
     import org.springframework.web.bind.annotation.*;
     import talenthub.talenthub.mission.dto.MissionRequestDto;
     import talenthub.talenthub.mission.dto.MissionResponseDto;
+    import talenthub.talenthub.mission.dto.PublicMissionResponseDto;
     import talenthub.talenthub.mission.entity.MissionStatus;
     import talenthub.talenthub.mission.service.MissionService;
     import talenthub.talenthub.security.UserPrincipal;
@@ -15,7 +16,6 @@
 
     @RestController
     @RequestMapping("/api/missions")
-    @SecurityRequirement(name = "basicAuth")
     public class MissionController {
 
         private final MissionService missionService;
@@ -25,6 +25,7 @@
         }
 
         @GetMapping
+        @SecurityRequirement(name = "basicAuth")
         public List<MissionResponseDto> findByStatus(
                 @RequestParam MissionStatus status) {
 
@@ -33,6 +34,7 @@
 
         @PostMapping
         @ResponseStatus(HttpStatus.CREATED)
+        @SecurityRequirement(name = "basicAuth")
         public MissionResponseDto create(
                 @Valid @RequestBody MissionRequestDto request,
                 @AuthenticationPrincipal UserPrincipal principal) {
@@ -41,11 +43,13 @@
         }
 
         @GetMapping("/{id}")
+        @SecurityRequirement(name = "basicAuth")
         public MissionResponseDto findById(@PathVariable Long id) {
             return missionService.findById(id);
         }
 
         @PutMapping("/{id}")
+        @SecurityRequirement(name = "basicAuth")
         public MissionResponseDto update(
                 @PathVariable Long id,
                 @Valid @RequestBody MissionRequestDto request,
@@ -55,10 +59,16 @@
         }
 
         @DeleteMapping("/{id}")
+        @SecurityRequirement(name = "basicAuth")
         public void delete(
                 @PathVariable Long id,
                 @AuthenticationPrincipal UserPrincipal principal) {
 
             missionService.delete(id, principal.getUser().getId());
+        }
+
+        @GetMapping("/public")
+        public List<PublicMissionResponseDto> findPublicMissions() {
+            return missionService.findAll();
         }
     }

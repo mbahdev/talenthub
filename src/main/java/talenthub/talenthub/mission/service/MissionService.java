@@ -4,6 +4,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import talenthub.talenthub.mission.dto.MissionRequestDto;
 import talenthub.talenthub.mission.dto.MissionResponseDto;
+import talenthub.talenthub.mission.dto.PublicMissionResponseDto;
 import talenthub.talenthub.mission.entity.Mission;
 import talenthub.talenthub.mission.entity.MissionStatus;
 import talenthub.talenthub.mission.exception.MissionNotFoundException;
@@ -31,6 +32,14 @@ public class MissionService {
         this.missionRepository = missionRepository;
         this.clientRepository = clientRepository;
         this.skillRepository = skillRepository;
+    }
+
+    public List<PublicMissionResponseDto> findAll() {
+        return missionRepository.findAll()
+                .stream()
+                .filter(mission -> mission.getStatus() != MissionStatus.DRAFT)
+                .map(this::toPublicResponseDto)
+                .toList();
     }
 
     public List<MissionResponseDto> findByStatus(MissionStatus status) {
@@ -136,6 +145,26 @@ public class MissionService {
                         .collect(Collectors.toSet())
         );
         return dto;
+    }
+
+    private PublicMissionResponseDto toPublicResponseDto(Mission mission) {
+        PublicMissionResponseDto dto = new PublicMissionResponseDto();
+
+        dto.setId(mission.getId());
+        dto.setTitle(mission.getTitle());
+        dto.setDescription(shorten(mission.getDescription()));
+        dto.setLocation(mission.getLocation());
+        dto.setRemote(mission.isRemote());
+
+        return dto;
+    }
+
+    private String shorten(String description) {
+        if (description == null || description.length() <= 180) {
+            return description;
+        }
+
+        return description.substring(0, 180).trim() + "...";
     }
 
     private void toUpdateMissionData(MissionRequestDto missionRequestDto,
