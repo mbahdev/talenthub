@@ -1,0 +1,331 @@
+
+.container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: #f5f7fa;
+}
+
+.card {
+    width: 100%;
+    max-width: 650px;
+    padding: 38px;
+    background: #ffffff;
+    border: 1px solid #edf0f4;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(23, 36, 59, 0.06);
+}
+
+.backLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #7b8494;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.backLink:hover {
+    color: #ed8a26;
+}
+
+.header {
+    margin: 28px 0 32px;
+    text-align: center;
+}
+
+.eyebrow {
+    color: #ed8a26;
+    font-size: 11px;
+    font-weight: 750;
+    letter-spacing: 2px;
+}
+
+.header h1 {
+    margin: 10px 0 8px;
+    color: #17243b;
+    font-size: 27px;
+    font-weight: 750;
+}
+
+.header p {
+    max-width: 430px;
+    margin: 0 auto;
+    color: #8992a1;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* Account type selection */
+
+.choiceSection h2 {
+    margin: 0 0 20px;
+    color: #344158;
+    font-size: 16px;
+    text-align: center;
+}
+
+.choiceGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.choiceCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    min-height: 200px;
+    padding: 25px 18px;
+    background: #ffffff;
+    border: 1px solid #e9edf2;
+    border-radius: 13px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.choiceCard:hover {
+    border-color: #ed8a26;
+    background: #fffaf5;
+    transform: translateY(-3px);
+    box-shadow: 0 7px 20px rgba(23, 36, 59, 0.06);
+}
+
+.choiceIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 55px;
+    height: 55px;
+    color: #ed8a26;
+    background: #fff3e5;
+    border-radius: 14px;
+}
+
+.choiceCard strong {
+    color: #17243b;
+    font-size: 16px;
+}
+
+.choiceCard span {
+    color: #8992a1;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* Registration form */
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+}
+
+.changeType {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 6px;
+    padding: 0;
+    color: #7b8494;
+    background: none;
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.changeType:hover {
+    color: #ed8a26;
+}
+
+.formTitle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #ed8a26;
+    margin: 3px 0 5px;
+}
+
+.formTitle h2 {
+    margin: 0;
+    color: #17243b;
+    font-size: 19px;
+}
+
+.fieldsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.field label {
+    color: #344158;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.field input,
+.field textarea {
+    width: 100%;
+    padding: 12px 13px;
+    color: #17243b;
+    background: #ffffff;
+    border: 1px solid #e2e7ee;
+    border-radius: 8px;
+    outline: none;
+    font: inherit;
+    font-size: 13px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.field input {
+    min-height: 43px;
+}
+
+.field textarea {
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.field input:focus,
+.field textarea:focus {
+    border-color: #ed8a26;
+    box-shadow: 0 0 0 3px rgba(237, 138, 38, 0.1);
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+    color: #aab2bf;
+}
+
+.skillsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+    padding: 14px;
+    background: #f8f9fb;
+    border: 1px solid #edf0f4;
+    border-radius: 9px;
+}
+
+.skillOption {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #526075;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.skillOption input {
+    width: 15px;
+    height: 15px;
+    min-height: auto;
+    accent-color: #ed8a26;
+    cursor: pointer;
+}
+
+.helper {
+    margin: 0;
+    color: #8992a1;
+    font-size: 12px;
+}
+
+.submitButton {
+    width: 100%;
+    min-height: 46px;
+    margin-top: 5px;
+    color: #ffffff;
+    background: #ed8a26;
+    border: none;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.submitButton:hover:not(:disabled) {
+    background: #d87514;
+}
+
+.submitButton:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.loginText {
+    margin: 2px 0 0;
+    color: #8992a1;
+    font-size: 12px;
+    text-align: center;
+}
+
+.loginText a {
+    color: #ed8a26;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.loginText a:hover {
+    text-decoration: underline;
+}
+
+/* Feedback */
+
+.error,
+.success {
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.error {
+    color: #c0392b;
+    background: #fff5f4;
+    border: 1px solid #f5d2ce;
+}
+
+.success {
+    color: #23865d;
+    background: #e8f7f0;
+    border: 1px solid #c9eddd;
+}
+
+/* Responsive */
+
+@media (max-width: 600px) {
+    .container {
+        align-items: flex-start;
+        padding: 20px 12px;
+    }
+
+    .card {
+        padding: 25px 19px;
+    }
+
+    .header h1 {
+        font-size: 23px;
+    }
+
+    .choiceGrid,
+    .fieldsGrid,
+    .skillsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .choiceCard {
+        min-height: 170px;
+    }
+}

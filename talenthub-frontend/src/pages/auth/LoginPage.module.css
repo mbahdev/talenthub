@@ -1,0 +1,93 @@
+
+.container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f4f6fa;
+    padding: 20px;
+}
+
+.form {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 36px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(23, 32, 51, 0.08);
+}
+
+.form h1 {
+    margin: 0;
+    color: #172033;
+    font-size: 25px;
+}
+
+.form p {
+    margin: 0 0 16px;
+    color: #7b8494;
+    font-size: 14px;
+}
+
+.form label {
+    color: #172033;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.form input {
+    padding: 12px;
+    border: 1px solid #dce1e8;
+    border-radius: 7px;
+    font-size: 14px;
+    outline: none;
+}
+
+.form input:focus {
+    border-color: #f0a83c;
+}
+
+.form button {
+    margin-top: 12px;
+    padding: 13px;
+    border: none;
+    border-radius: 7px;
+    background: #172033;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.form button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.error {
+    padding: 12px;
+    border-radius: 7px;
+    background: #fff0f0;
+    color: #c0392b;
+    font-size: 13px;
+}
+
+.registerLink {
+    margin-top: 22px;
+    text-align: center;
+    color: #7b8494;
+    font-size: 13px;
+}
+
+.registerLink a {
+    color: #ed8a26;
+    font-weight: 650;
+    text-decoration: none;
+}
+
+.registerLink a:hover {
+    color: #d87514;
+    text-decoration: underline;
+}

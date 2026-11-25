@@ -1,0 +1,334 @@
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-bottom: 40px;
+}
+
+.backLink {
+    color: #d99500;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.backLink:hover {
+    color: #b77c00;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: 32px;
+    background: white;
+    border: 1px solid #e9edf2;
+    border-radius: 12px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.header h1 {
+    margin: 0 0 10px;
+    color: #172033;
+    font-size: 28px;
+}
+
+.location {
+    margin: 0;
+    color: #7b8494;
+    font-size: 15px;
+}
+
+.status {
+    padding: 7px 13px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.statusOpen {
+    background: #e8f7ee;
+    color: #218653;
+}
+
+.statusClosed {
+    background: #fdeaea;
+    color: #c0392b;
+}
+
+.statusCanceled {
+    background: #e9edf2;
+    color: #687386;
+}
+
+.information {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    padding: 24px;
+    border-radius: 10px;
+    background: #f6f7f9;
+}
+
+.information div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.information span {
+    color: #7b8494;
+    font-size: 14px;
+}
+
+.information strong {
+    color: #172033;
+    font-size: 18px;
+}
+
+.descriptionSection h2,
+.skills h2,
+.actionSection h2 {
+    margin: 0 0 18px;
+    color: #172033;
+    font-size: 20px;
+}
+
+.descriptionSection p {
+    margin: 0;
+    color: #596477;
+    font-size: 15px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+}
+
+.skills > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.skills span {
+    padding: 9px 14px;
+    border-radius: 8px;
+    background: #f1f3f7;
+    color: #596477;
+    font-size: 14px;
+}
+
+.actionSection {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding-top: 28px;
+    border-top: 1px solid #e1e5eb;
+    width: 100%;
+}
+
+.actionSection > p {
+    margin: 0;
+    color: #596477;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.actionSection form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.actionSection label {
+    color: #172033;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.actionSection input:not([type="checkbox"]),
+.actionSection textarea,
+.actionSection select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid #dce1e8;
+    border-radius: 8px;
+    background: white;
+    color: #172033;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.actionSection textarea {
+    resize: vertical;
+    min-height: 110px;
+}
+
+.actionSection input:focus,
+.actionSection textarea:focus,
+.actionSection select:focus {
+    border-color: #f0a500;
+    box-shadow: 0 0 0 3px rgba(240, 165, 0, 0.12);
+}
+
+.actionSection label:has(input[type="checkbox"]) {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.primaryButton,
+.deleteButton,
+.secondaryButton {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 44px;
+    padding: 11px 20px;
+    border: none;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+}
+
+.primaryButton {
+    background: #f0a500;
+    color: #172033;
+}
+
+.primaryButton:hover {
+    background: #d99500;
+}
+
+.deleteButton {
+    background: #fdeaea;
+    color: #c0392b;
+}
+
+.deleteButton:hover {
+    background: #fbdada;
+}
+
+.secondaryButton {
+    background: #f1f3f7;
+    color: #596477;
+}
+
+.secondaryButton:hover {
+    background: #e5e8ee;
+}
+
+.primaryButton:disabled,
+.deleteButton:disabled,
+.secondaryButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.success {
+    color: #218653 !important;
+    font-size: 14px;
+}
+
+.error {
+    color: #c0392b !important;
+    font-size: 14px;
+}
+
+.applicationList {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+}
+
+.applicationCard {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px;
+    border: 1px solid #e9edf2;
+    border-radius: 10px;
+    background: #fafbfc;
+}
+
+.applicationCard > div:first-child {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.applicationCard > div:first-child strong {
+    color: #172033;
+    font-size: 15px;
+}
+
+.applicationCard > div:first-child span {
+    color: #596477;
+    font-size: 14px;
+}
+
+.applicationCard p {
+    margin: 0;
+    color: #596477;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.applicationActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.applicationActions button {
+    min-width: 110px;
+}
+
+@media (max-width: 640px) {
+    .card {
+        padding: 20px;
+    }
+
+    .header {
+        flex-direction: column;
+    }
+
+    .header h1 {
+        font-size: 23px;
+    }
+
+    .information {
+        gap: 24px;
+    }
+
+    .applicationActions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .applicationActions button {
+        width: 100%;
+    }
+}
